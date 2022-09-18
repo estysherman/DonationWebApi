@@ -1,4 +1,6 @@
+using DonationApi.Models;
 using DonationApi.Repositories;
+using DonationApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<ITrumaRepository, TrumaRepository>();
+
+builder.Services.AddTransient<IMailService, MailService>();
+
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 var app = builder.Build();
 

@@ -1,9 +1,11 @@
 ﻿using DonationApi.Models;
+using DonationApi.Services;
 
 namespace DonationApi.Repositories
 {
     public class TrumaRepository : ITrumaRepository
     {
+        private readonly IMailService _mailService;
         public static List<Truma> TrumotList = new List<Truma>() { };
         //{
         //    new Truma()
@@ -23,6 +25,11 @@ namespace DonationApi.Repositories
         //    }
         //};
 
+        public TrumaRepository(IMailService mailService)
+        {
+            _mailService = mailService;
+        }
+
 
         public List<Truma> GetTrumot()
         {
@@ -35,6 +42,10 @@ namespace DonationApi.Repositories
             TrumotList.Add(truma);
 
             //check scuhm and send email 
+            if (truma.Schum > 10000)
+            {
+                _mailService.SendEmailAsync();
+            }
 
             return TrumotList.ElementAt(truma.Id - 1);
         }
@@ -54,7 +65,11 @@ namespace DonationApi.Repositories
                 trumaToUpdate.SugMatbea = truma.SugMatbea;
                 trumaToUpdate.ShaarHamara = truma.ShaarHamara;
 
-                //check scuhm and send email                
+                //check scuhm and send email
+                if (truma.Schum > 10000)
+                {
+                    _mailService.SendEmailAsync();
+                }
             }
 
             return trumaToUpdate;
